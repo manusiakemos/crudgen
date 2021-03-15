@@ -4,12 +4,15 @@
 [![Travis](https://img.shields.io/travis/manusiakemos/crudgen.svg?style=flat-square)]()
 [![Total Downloads](https://img.shields.io/packagist/dt/manusiakemos/crudgen.svg?style=flat-square)](https://packagist.org/packages/manusiakemos/crudgen)
 
-## Install
+## Usage
+Install Crudgen First
+`composer require manusiakemos/crudgen`
+Publish Asset
+
+Install Admin 
 `composer require manusiakemos/crudgen`
 
-## Usage
-Write a few lines about the usage of this package.
-
+Publish Asset
 ## Testing
 Run the tests with:
 
