@@ -1,0 +1,45 @@
+[
+    {
+        "class": "Brand",
+        "table": "brands",
+        "router": true,
+        "view": true,
+        "spa": false,
+        "model": true,
+        "controller": true,
+        "seeder": true,
+        "migration": true,
+        "migrate": false,
+        "upload": false,
+        "fields": [
+            {
+                "name": "id",
+                "label": "Id",
+                "dbType": "increments",
+                "length": false,
+                "nullable": false,
+                "default": false,
+                "htmlType": false,
+                "validations": false,
+                "searchable": false,
+                "printable": false,
+                "primary": true,
+                "faker": false
+            },
+            {
+                "name": "name",
+                "dbType": "string",
+                "label": "Nama",
+                "length": 190,
+                "nullable": true,
+                "default": false,
+                "htmlType": "text",
+                "validations": true,
+                "searchable": true,
+                "printable": true,
+                "primary": false,
+                "faker": false
+            }
+        ]
+    }
+]

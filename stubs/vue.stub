@@ -1,0 +1,317 @@
+<template>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item active" aria-current="page">{@className}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <vs-card class="mt-1">
+                    <div>
+                        <div class="d-lg-flex">
+                            <div class="mb-3">
+                                <h4>{@className}</h4>
+                            </div>
+                            <div class="mb-3 ml-lg-auto">
+                                <vs-button color="primary" type="relief" @click="create">Tambah</vs-button>
+                                <vs-button color="primary" type="relief" @click="refreshDt">Refresh</vs-button>
+                                <vs-button color="danger" type="relief" @click="generatePdf">PDF</vs-button>
+                                <!--<vs-button color="success" type="relief">Excel</vs-button>-->
+                                <vs-button @click="bulkDelete" color="danger" v-if="bulkDeleteData.length > 0" type="relief">Hapus Data Terpilih</vs-button>
+                            </div>
+                        </div>
+                        <!--//dt-->
+                        <remote-dt
+                            :config-dt="configDt"
+                            selector="dt"
+                            ref="dt">
+                        </remote-dt>
+
+                        <!--//print-->
+                        <div id="print" class="d-none d-print-block">
+                            <h4 class="text-center text-capitalize">Report {@className}</h4>
+                            <table class="table table-bordered">
+                                <thead class="bg-primary text-white">
+                                <tr>
+                                    <th v-for="(v,i) in configDt.columns" v-if="v.print" v-html="v.title"
+                                        :class="v.class"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="(value,index) in dataPrint.data">
+                                    <td v-for="(v,i) in configDt.columns" v-if="v.print" :class="v.class"
+                                        v-html="value[v.data]">
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!--modalForm-->
+                        <b-modal :title="modalTitle" v-model="showMyModal" size="xl" hide-footer>
+                            {@generatedForm}
+
+                            <!--
+                            <vs-row vs-type="flex" vs-justify="start" vs-align="flex-center" class="mb-3">
+                                <b-form-file
+                                    v-model="image"
+                                    placeholder="Choose a file or drop it here..."
+                                    drop-placeholder="Drop file here..."
+                                ></b-form-file>
+                                <error-message v-if="errors.image != undefined && errors.image[0]"
+                                               :message="errors.image[0]"></error-message>
+                            </vs-row>
+                            -->
+
+                            <vs-row vs-type="flex" vs-justify="flex-end" vs-align="flex-end">
+                                <vs-button type="relief" class="m-1"
+                                           @click="action == 'store' ? store() : update()">Simpan
+                                </vs-button>
+                            </vs-row>
+                        </b-modal>
+                    </div>
+                </vs-card>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    import RemoteDt from "../components/RemoteDt.vue";
+
+    export default {
+        name: "{@className}",
+        components: {
+            RemoteDt
+        },
+        mounted() {
+            this.setDt();
+        },
+        created() {
+            this.dataClone = this.data;
+        },
+        data: function () {
+            return {
+                bulkDeleteData:[],
+                configDt: {
+                    ajax: {
+                        type: "GET",
+                        url: "/api/{@classNameLower}",
+                        data: {
+                            "slider_status": null
+                        }
+                    },
+                    processing: true,
+                    serverSide: true,
+                    responsive: true,
+                    language: {
+                        "sEmptyTable": "Tidak ada data yang tersedia pada tabel ini",
+                        "sProcessing": "Sedang memproses...",
+                        "sLengthMenu": "Tampilkan _MENU_ entri",
+                        "sZeroRecords": "Tidak ditemukan data yang sesuai",
+                        "sInfo": "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                        "sInfoEmpty": "Menampilkan 0 sampai 0 dari 0 entri",
+                        "sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
+                        "sInfoPostFix": "",
+                        "sSearch": "Cari:",
+                        "sUrl": "",
+                        "oPaginate": {
+                            "sFirst": "Pertama",
+                            "sPrevious": "Sebelumnya",
+                            "sNext": "Selanjutnya",
+                            "sLast": "Terakhir"
+                        },
+                        lengthMenu: 'Menampilkan <select class="form-control">' +
+                        '<option value="10">10</option>' +
+                        '<option value="20">20</option>' +
+                        '<option value="30">30</option>' +
+                        '<option value="40">40</option>' +
+                        '<option value="50">50</option>' +
+                        '<option value="-1">All</option>' +
+                        '</select> Data Perhalaman',
+                    },
+                    columns:  {@generatedColumns}
+                },
+                data: {
+                {@data}
+                },
+                dataClone: {},
+                errors: [],
+                image: null,
+                file: null,
+                upload: true,
+                dataPrint: '',
+                modalTitle: "",
+                action: 'store',
+            }
+        },
+        methods: {
+            async generatePdf() {
+                let res = await this.axios.post('/api/{@classNameLower}/api');
+                this.dataPrint = res;
+                this.$nextTick(() => {
+                    this.printPdf('portrait')
+                });
+            },
+           setDt() {
+                           var vm = this;
+                           var el = this.$refs.dt.$el
+                           $(el).find("#dt").on("click", ".btn-edit", function (e) {
+                               e.preventDefault();
+                               var url = $(this).attr('href');
+                               vm.edit(url);
+                           }).on("click", ".btn-destroy", function (e) {
+                               e.preventDefault();
+                               var url = $(this).attr('href');
+                               vm.destroy(url);
+                           }).on("change", ".dt-selectable", function (e) {
+                               if ($(this).is(':checked')) {
+                                   $(this).attr('value', 'true');
+                               } else {
+                                   $(this).attr('value', 'false');
+                               }
+                               var val = $(this).val()
+                               var id = $(this).attr('id');
+                               let obj = {
+                                   id: id,
+                                   val: val
+                               };
+                               if (obj.val == "true") {
+                                   vm.bulkDeleteData.push(obj);
+                               } else {
+                                   let i = vm.bulkDeleteData.indexOf(obj);
+                                   vm.bulkDeleteData.splice(i, 1);
+                               }
+                           });
+                       },
+            refreshDt() {
+                this.$refs.dt.refresh();
+            },
+            create() {
+                this.data = _.cloneDeep(this.dataClone);
+                this.action = 'store';
+                this.modalTitle = 'Tambah {@className}';
+                this.showMyModal = true;
+            },
+            edit(url) {
+                this.modalTitle = 'Edit {@className}';
+                this.action = 'update';
+                this.axios.get(url).then(res => {
+                    this.data = _.cloneDeep(res.data);
+                });
+                this.showMyModal = true;
+            },
+            store() {
+                var data = this.makeFormData(this.data);
+                if (this.upload) {
+                    data.append('image', this.image);
+                }
+                let url = '/api/{@classNameLower}';
+                this.handleRequest(url, data);
+            },
+            update() {
+                var data = this.makeFormData(this.data);
+                data.append('_method', 'PUT');
+                if (this.upload) {
+                    data.append('image', this.image);
+                }
+                let url = `/api/{@classNameLower}/${this.data.{@pkName}}`;
+                this.handleRequest(url, data);
+            },
+            handleRequest(url, data) {
+                this.errors = [];
+                if (this.upload) {
+                    this.axios.post(url, data, this.headers).then(res => {
+                        if (res.data.status) {
+                            this.$vs.notify({
+                                title: res.data.text,
+                                text: res.data.message
+                            });
+                            this.refreshDt();
+                        }
+                    }).catch(error => {
+                        if (error.response) {
+                            this.errors = error.response.data.errors;
+                        }
+                    });
+                } else {
+                    this.axios.post(url, data).then(res => {
+                        if (res.data.status) {
+                            this.$vs.notify({
+                                title: res.data.text,
+                                text: res.data.message
+                            });
+                            this.refreshDt();
+                        }
+                    }).catch(error => {
+                        if (error.response) {
+                            this.errors = error.response.data.errors;
+                        }
+                    });
+                }
+            },
+             bulkDelete(){
+                            var $vm = this;
+                            this.$vs.dialog({
+                                type: 'confirm',
+                                color: 'danger',
+                                title: `Apakah Kamu yakin`,
+                                acceptText: 'Ya',
+                                cancelText: 'Tidak',
+                                text: 'Data Yang Dihapus Tidak Dapat Dikembalikan',
+                                accept: function () {
+                                    this.axios.post('/api/{@classNameLower}/bulkdelete',{data:$vm.bulkDeleteData}).then(res => {
+                                        if (res.data.status) {
+                                             $vm.bulkDeleteData = [];
+                                            this.$vs.notify({
+                                                title: res.data.text,
+                                                text: res.data.message
+                                            });
+                                            $vm.refreshDt();
+                                        }
+                                    });
+                                },
+                                cancel: function () {
+                                    this.$vs.notify({
+                                        title: 'Cancel',
+                                        text: 'Data Batal Dihapus'
+                                    });
+                                }
+                            });
+                        },
+            destroy(url) {
+                var $vm = this;
+                this.$vs.dialog({
+                    type: 'confirm',
+                    color: 'danger',
+                    title: `Apakah Kamu yakin`,
+                    acceptText: 'Ya',
+                    cancelText: 'Tidak',
+                    text: 'Data Yang Dihapus Tidak Dapat Dikembalikan',
+                    accept: function () {
+                        this.axios.delete(url).then(res => {
+                            if (res.data.status) {
+                                this.$vs.notify({
+                                    title: res.data.text,
+                                    text: res.data.message
+                                });
+                                $vm.refreshDt();
+                            }
+                        });
+                    },
+                    cancel: function () {
+                        this.$vs.notify({
+                            title: 'Cancel',
+                            text: 'Data Batal Dihapus'
+                        });
+                    }
+                });
+            },
+        }
+    }
+</script>

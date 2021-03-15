@@ -1,0 +1,14 @@
+
+<div class="btn-group" role="group">
+    <a href="{{route('{@classNameLower}.edit', $data->{@primaryKey})}}" class="btn btn-primary btn-edit btn-sm">
+<span class="material-icons" style="font-size: 0.9rem">
+edit
+</span> Edit
+    </a>
+    <a href="{{route('{@classNameLower}.destroy', $data->{@primaryKey})}}" class="btn btn-danger btn-destroy btn-sm">
+    <span class="material-icons" style="font-size: 0.9rem">
+delete
+</span>
+        Hapus
+    </a>
+</div>

@@ -1,0 +1,141 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\{@className};
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Yajra\DataTables\DataTables;
+
+class {@className}Controller extends Controller
+{
+
+    public function __construct()
+    {
+        $this->middleware(['auth:sanctum', 'role:admin|super-admin']);
+    }
+
+    public function api(Request $request)
+    {
+        if(!isset($request->act)){
+            return {@className}::all();
+        }
+    }
+
+    /**
+        * @param Request $request
+        * @return \Illuminate\Http\JsonResponse
+        * hapus semua
+        */
+       public function bulkDelete(Request $request)
+       {
+           $data = collect($request->data);
+           $save = {@className}::whereIn("{@primaryKey}", $data->pluck("id")->unique())->delete();
+           return $save
+               ? response()->json(['status' => true, 'text' => 'success', 'message' => '{@className} berhasil dihapus'])
+               : response()->json(['status' => false, 'text' => 'error', 'message' => '{@className} gagal dihapus'], 500);
+       }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     * @throws \Exception
+     */
+    public function index(Request $request)
+    {
+        $data = {@className}::query();
+        /*if ($request->has("{@classNameLower}_status") && $request->{@classNameLower}_status != null) {
+            $data = $data->where("_{@classNameLower}.{@classNameLower}_status","=", $request->{@classNameLower}_status);
+        }*/
+        if ($request->ajax()) {
+            return DataTables::of($data)
+                ->addColumn('action', function ({@className} $data) {
+                    return view("{@classNameLower}.actions_{@classNameLower}", ['data' => $data]);
+                })
+                ->addColumn('checked', function ({@className} $data) {
+                    return view("{@classNameLower}.checked_{@classNameLower}", ['data' => $data]);
+                })
+                ->rawColumns(['action','checked'])
+                ->toJson();
+        }
+
+        return view('{@classNameLower}.index');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function store(Request $request)
+    {
+        {@validate}
+        $db = new {@className};
+        $save = $this->handleRequest($request, $db);
+
+        return $save
+            ? response()->json(['status' => true, 'text' => 'success', 'message' => '{@className} berhasil ditambahkan'])
+            : response()->json(['status' => false, 'text' => 'error', 'message' => '{@className} gagal ditambahkan'], 500);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\{@className} ${@classNameLower}
+     * @return \Illuminate\Http\Response
+     */
+    public function show({@className} ${@classNameLower})
+    {
+        return ${@classNameLower};
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Models\{@className} ${@classNameLower}
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function update(Request $request, {@className} ${@classNameLower})
+    {
+
+       {@validate}
+        $db = ${@classNameLower};
+        $save = $this->handleRequest($request, $db);
+
+        return $save
+            ? response()->json(['status' => true, 'text' => 'success', 'message' => '{@className} berhasil diupdate'])
+            : response()->json(['status' => false, 'text' => 'error', 'message' => '{@className} gagal diupdate'], 500);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\{@className} ${@classNameLower}
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy({@className} ${@classNameLower})
+    {
+        $save = ${@classNameLower}->delete();
+
+        return $save
+            ? response()->json(['status' => true, 'text' => 'success', 'message' => '{@className} berhasil dihapus'])
+            : response()->json(['status' => false, 'text' => 'error', 'message' => '{@className} gagal dihapus'], 500);
+    }
+
+    /**
+     * @param $request
+     * @param \App\Models\{@className} $db
+     * @return mixed
+     */
+    private function handleRequest(Request $request, $db)
+    {
+        {@handleRequest}
+        return $db->save();
+    }
+}

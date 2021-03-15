@@ -1,0 +1,1 @@
+@include("{@classNameSlug}.form", [ 'action' => route('{@classNameLower}.store') ])

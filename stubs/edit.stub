@@ -1,0 +1,1 @@
+@include("{@classNameSlug}.form", ['data' => $data, 'method'=> 'PUT', 'action' => route('{@classNameSlug}.update', $data->{@primaryKey})])
