@@ -2,5 +2,6 @@
 
 return [
     'enabled' => true,
-    'mode' => 'mpa'
+    'mode' => 'mpa',
+    'use_login' => false
 ];
