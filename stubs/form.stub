@@ -26,7 +26,7 @@
     </div>
 </div>
 
-<script src="{{asset('libs/etc/init.js')}}"></script>
+<script src="{{asset('vendor/crudgen/libs/etc/init.js')}}"></script>
 <script>
     $("#formModal").on("submit", function (e) {
         e.preventDefault();

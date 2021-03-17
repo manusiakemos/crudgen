@@ -72,7 +72,7 @@
     <script>
         $.LoadingOverlaySetup({
             background: "rgba(0, 0, 0, 0.5)",
-            image: "{{asset('/images/800.svg')}}",
+            image: "{{asset('vendor/crudgen/images/800.svg')}}",
             imageColor: "#f0ffad"
         });
         var app = new Vue({
