@@ -38,7 +38,8 @@ class CrudgenServiceProvider extends ServiceProvider
         ], 'crudgen');
 
         $this->publishes([
-            __DIR__.'/../src/View' => app_path('View'),
+            __DIR__.'/../src/View/Components' => app_path('View/Components'),
+            __DIR__.'/../resources/views/components' => resource_path('views/vendor/crudgen/components'),
         ], 'component');
     }
 }
