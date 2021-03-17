@@ -53,22 +53,22 @@
 
 @push("style")
     <link rel="stylesheet" type="text/css"
-          href="{{ asset('vendor/crudgen/datatables/datatables.min.css') }}"/>
+          href="{{ asset('vendor/crudgen/libs/datatables/datatables.min.css') }}"/>
     <link rel="stylesheet" type="text/css"
-          href="{{ asset('vendor/crudgen/select2/select2.min.css') }}"/>
+          href="{{ asset('vendor/crudgen/libs/select2/select2.min.css') }}"/>
 @endpush
 
 
 @push("script")
-        <script src="{{ asset('vendor/crudgen/mask/dist/jquery.mask.min.js') }}"></script>
-               <script src="{{ asset('vendor/crudgen/etc/moment.min.js') }}"></script>
-               <script src="{{ asset('vendor/crudgen/select2/select2.min.js') }}"></script>
-               <script type="text/javascript" src="{{ asset('vendor/crudgen/datatables/pdfmake.min.js') }}"></script>
-               <script type="text/javascript" src="{{ asset('vendor/crudgen/datatables/vfs_fonts.js') }}"></script>
+        <script src="{{ asset('vendor/crudgen/libs/mask/dist/jquery.mask.min.js') }}"></script>
+               <script src="{{ asset('vendor/crudgen/libs/etc/moment.min.js') }}"></script>
+               <script src="{{ asset('vendor/crudgen/libs/select2/select2.min.js') }}"></script>
+               <script type="text/javascript" src="{{ asset('vendor/crudgen/libs/datatables/pdfmake.min.js') }}"></script>
+               <script type="text/javascript" src="{{ asset('vendor/crudgen/libs/datatables/vfs_fonts.js') }}"></script>
                <script type="text/javascript"
-                       src="{{ asset("vendor/crudgen/datatables/datatables.min.js") }}"></script>
-               <script src="{{ asset('vendor/crudgen/etc/loadingoverlay.js') }}"></script>
-               <script src="{{ asset('vendor/crudgen/etc/jqueryform.js') }}"></script>
+                       src="{{ asset("vendor/crudgen/libs/datatables/datatables.min.js") }}"></script>
+               <script src="{{ asset('vendor/crudgen/libs/etc/loadingoverlay.js') }}"></script>
+               <script src="{{ asset('vendor/crudgen/libs/etc/jqueryform.js') }}"></script>
     <script>
         $.LoadingOverlaySetup({
             background: "rgba(0, 0, 0, 0.5)",
