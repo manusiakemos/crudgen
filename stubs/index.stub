@@ -54,6 +54,9 @@
 @push("style")
     <link rel="stylesheet" type="text/css"
           href="{{ asset('vendor/crudgen/libs/datatables/datatables.min.css') }}"/>
+          {{-- freddyfy material datepicker --}}
+           <link rel="stylesheet" type="text/css"
+          href="{{ asset('vendor/crudgen/libs/material-datepicker/material-datepicker.min.css') }}"/>
     <link rel="stylesheet" type="text/css"
           href="{{ asset('vendor/crudgen/libs/select2/select2.min.css') }}"/>
 @endpush
@@ -62,6 +65,7 @@
 @push("script")
         <script src="{{ asset('vendor/crudgen/libs/mask/dist/jquery.mask.min.js') }}"></script>
                <script src="{{ asset('vendor/crudgen/libs/etc/moment.min.js') }}"></script>
+               <script src="{{ asset('vendor/crudgen/libs/material-datepicker/material-datepicker.min.js') }}"></script>
                <script src="{{ asset('vendor/crudgen/libs/select2/select2.min.js') }}"></script>
                <script type="text/javascript" src="{{ asset('vendor/crudgen/libs/datatables/pdfmake.min.js') }}"></script>
                <script type="text/javascript" src="{{ asset('vendor/crudgen/libs/datatables/vfs_fonts.js') }}"></script>
