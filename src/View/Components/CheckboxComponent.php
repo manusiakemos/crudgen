@@ -68,7 +68,7 @@ class CheckboxComponent extends Component
                 $placeholder = "Pilih Role";
                 break;
         }
-        return view('components.checkbox-component',
+        return view('vendor.crudgen.components.checkbox-component',
             compact('options',
                 'placeholder',
                 'value',

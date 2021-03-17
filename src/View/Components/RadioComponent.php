@@ -58,7 +58,7 @@ class RadioComponent extends Component
                 $placeholder = "Pilih Role";
                 break;
         }
-        return view('components.radio-component', compact('options', 'placeholder', 'value', 'text', 'selected', 'name', 'id', 'errorContainer', 'textValue', 'textLabel'));
+        return view('vendor.crudgen.components.radio-component', compact('options', 'placeholder', 'value', 'text', 'selected', 'name', 'id', 'errorContainer', 'textValue', 'textLabel'));
     }
 
     private function statusOptions()

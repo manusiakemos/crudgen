@@ -58,7 +58,7 @@ class SelectComponent extends Component
                 $placeholder = "Pilih Role";
                 break;
         }
-        return view('components.select-component', compact('options', 'placeholder', 'value', 'text', 'selected', 'name', 'id', 'errorContainer', 'textValue', 'textLabel'));
+        return view('vendor.crudgen.components.select-component', compact('options', 'placeholder', 'value', 'text', 'selected', 'name', 'id', 'errorContainer', 'textValue', 'textLabel'));
     }
 
     private function statusOptions()
