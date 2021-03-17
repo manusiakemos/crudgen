@@ -5,20 +5,9 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/manusiakemos/crudgen.svg?style=flat-square)](https://packagist.org/packages/manusiakemos/crudgen)
 
 ## Usage
-Install Crudgen First
+Install Crudgen And Publish Asset
 `composer require manusiakemos/crudgen`
-Publish Asset
-
-Install Admin 
-`composer require manusiakemos/crudgen`
-
-Publish Asset
-## Testing
-Run the tests with:
-
-``` bash
-vendor/bin/phpunit
-```
+`php artisan vendor:publish --tag=crudgen`
 
 ## Changelog
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
