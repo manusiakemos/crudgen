@@ -27,6 +27,18 @@
 </div>
 
 <script src="{{asset('vendor/crudgen/libs/etc/init.js')}}"></script>
+
+{{--
+<script>
+ var MaterialDatepickerInit = new MaterialDatepicker('.date', {
+        outputFormat: 'YYYY-MM-DD',
+        inputFormat: 'YYYY-MM-DD',
+        zIndex: 99999,
+        orientation:'portrait'
+    });
+</script>
+--}}
+
 <script>
     $("#formModal").on("submit", function (e) {
         e.preventDefault();
