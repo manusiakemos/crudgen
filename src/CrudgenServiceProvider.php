@@ -34,6 +34,7 @@ class CrudgenServiceProvider extends ServiceProvider
             __DIR__.'/../stubs' => base_path('stubs/vendor/crudgen'),
             __DIR__.'/../database/crudgen.json' => database_path('json/crudgen.json'),
             __DIR__.'/../public' => public_path('vendor/crudgen'),
+            __DIR__.'/../helper' => app_path('helper'),
         ], 'crudgen');
     }
 }
