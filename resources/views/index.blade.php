@@ -1,7 +1,7 @@
 @extends('vendor.crudgen.app')
 
 @section('content')
-    <div class="container" id="app">
+    <div class="container-fluid py-5" id="app">
         <div class="row">
             <div class="col-md-12">
                 <div class="card border-light shadow-sm">
@@ -35,7 +35,7 @@
                                     <td class="text-center w-25">
                                         <button class="btn btn-primary" @click="edit(i)"><span
                                                 class="fa fa-pencil"></span></button>
-                                        <button class="btn btn-danger"><span class="fa fa-trash-o"></span></button>
+                                        <button class="btn btn-danger" @click="destroy(i)"><span class="fa fa-trash-o"></span></button>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -377,12 +377,16 @@
                 refresh() {
                     this.getData();
                 },
-                deleteAll() {
-                    this.data_json = [];
-                    axios.post('/crud/truncate');
+                deleteAll(data = []) {
+                    this.data_json = data;
+                    axios.post('/crud/truncate', {data : this.data_json});
                 },
                 deleteField(i) {
                     this.data.fields.splice(i,1);
+                    var vm = this;
+                    this.$nextTick(()=>{
+                        vm.simpan();
+                    });
                 },
                 addField(index=0) {
                     var index = index + 1;
@@ -409,6 +413,10 @@
                 edit(index) {
                     this.data = this.data_json[index];
                     $("#modalForm").modal("toggle");
+                },
+                destroy(index) {
+                    this.data_json.splice(index,1);
+                    this.deleteAll(this.data_json);
                 },
                 getData() {
                     axios.post('/crud/data').then(res => {
