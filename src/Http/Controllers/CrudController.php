@@ -15,21 +15,21 @@ class CrudController extends Controller
         //        $this->middleware(['auth'])->only('ui');
     }
 
-    public function ui()
-    {
-        return view("cruds_ui.index");
-    }
-
     public function index()
     {
-        $get_json = file_get_contents(base_path("/database/json/crud.json"));
+        return view("vendor.crudgen.index");
+    }
+
+    public function data()
+    {
+        $get_json = file_get_contents(base_path("/database/json/crudgen.json"));
         return response()->json(json_decode($get_json, FALSE));
     }
 
     public function truncate(Request $request)
     {
         $data = $request->data;
-        $save = file_put_contents(base_path("/database/json/crud.json"), $data);
+        $save = file_put_contents(base_path("/database/json/crudgen.json"), $data);
         return response()->json(['status' => $save, 'message' => 'Successfully generated']);
     }
 
@@ -37,12 +37,12 @@ class CrudController extends Controller
     {
         //        dd($request->all());
         $this->handleRequest($request);
-        Artisan::call("ide-helper:models --write");
+        //        Artisan::call("ide-helper:models --write");
         if ($request->migrate) {
             Artisan::call("migrate");
         }
 
-        $get_json = file_get_contents(base_path("/database/json/crud.json"));
+        $get_json = file_get_contents(base_path("/database/json/crudgen.json"));
         $array = json_decode($get_json, true);
         $collection = collect($array);
         $data = $collection->where("class", $request->class)->first();
@@ -58,7 +58,7 @@ class CrudController extends Controller
             $collection->push($x);
             $json = $collection;
         }
-        $save = file_put_contents(base_path("/database/json/crud.json"), $json);
+        $save = file_put_contents(base_path("/database/json/crudgen.json"), $json);
         return response()->json(['status' => $save, 'message' => 'Successfully generated']);
     }
 
@@ -99,10 +99,10 @@ class CrudController extends Controller
 
         $className = $request->class;
         $classNameLower = Str::slug($request->class, "_");
-        $handleRequest = View::make('cruds.handle_request', compact('fields'))->render();
+        $handleRequest = View::make('vendor.crudgen.handle_request', compact('fields'))->render();
 
         $field_validate = $fields_all->where('validations', true);
-        $validate = View::make('cruds.validate_generator', compact('field_validate'))->render();
+        $validate = View::make('vendor.crudgen.validate_generator', compact('field_validate'))->render();
         $stubTemplate = [
             '{@primaryKey}',
             '{@className}',
@@ -118,9 +118,9 @@ class CrudController extends Controller
             $validate
         ];
         if (config('app.mode') == 'spa') {
-            $stub_template = file_get_contents(base_path("stubs/cruds/controller_spa.stub"));
+            $stub_template = file_get_contents(base_path("stubs/vendor/crudgen/controller_spa.stub"));
         } else {
-            $stub_template = file_get_contents(base_path("stubs/cruds/controller.stub"));
+            $stub_template = file_get_contents(base_path("stubs/vendor/crudgen/controller.stub"));
         }
         $controllerTemplate = str_replace($stubTemplate, $stubReplaceTemplate, $stub_template);
 
@@ -146,7 +146,7 @@ class CrudController extends Controller
             '{@primaryKey}'
         ];
 
-        $stub_template = file_get_contents(base_path("stubs/cruds/model.stub"));
+        $stub_template = file_get_contents(base_path("stubs/vendor/crudgen/model.stub"));
         $modelTemplate = str_replace($stubTemplate, $stubReplaceTemplate, $stub_template);
 
         file_put_contents(app_path("Models/{$className}.php"), $modelTemplate);
@@ -162,13 +162,13 @@ class CrudController extends Controller
         File::append(base_path("routes/web.php"), $routeApi);
         File::append(base_path("routes/web.php"), $route);
 
-
+        /*
         $route = strtolower($className);
         $routeText = $className;
 
         $templateToReplace = '<li class="{{ (request()->is(\'' . $route . '*\')) ? \'active\' : \'\' }}">
     <a href="{{route(\'' . $route . '.index\')}}">' . $routeText . '</a></li>';
-        File::append(resource_path("views/parts/sidebar.blade.php"), $templateToReplace);
+        File::append(resource_path("views/parts/sidebar.blade.php"), $templateToReplace);*/
     }
 
     private function generateView($request)
@@ -179,7 +179,7 @@ class CrudController extends Controller
         $this->generateCreate($request);
         $this->generateEdit($request);
         $this->generateFormView($request);
-        Artisan::call("ide-helper:models --write");
+        //        Artisan::call("ide-helper:models --write");
     }
 
     private function generateMigration($request)
@@ -190,7 +190,7 @@ class CrudController extends Controller
         $classNameSlug = Str::slug($classNameLower, "_");
         $fields = $request->fields;
 
-        $generatedColumns = View::make("cruds.migration", compact('fields'))->render();
+        $generatedColumns = View::make("vendor.crudgen.migration", compact('fields'))->render();
         $search = [
             '{@className}', '{@tableName}', '{@generatedColumns}', '{@classNameSlug}', '{@classNameLower}',
         ];
@@ -198,7 +198,7 @@ class CrudController extends Controller
             $className, $tableName, $generatedColumns, $classNameSlug, $classNameLower
         ];
 
-        $subject = file_get_contents(base_path("stubs/cruds/migration.stub"));
+        $subject = file_get_contents(base_path("stubs/vendor/crudgen/migration.stub"));
         $index_replace_template = str_replace($search, $replace, $subject);
         file_put_contents(database_path("/migrations/2020_00_00_00_create_{$classNameSlug}_table.php"), $index_replace_template);
     }
@@ -218,9 +218,9 @@ class CrudController extends Controller
             $primaryKey['name'], $classNameLower
         ];
         if (config('app.mode') == 'spa') {
-            $subject = file_get_contents(base_path("stubs/cruds/action_spa.stub"));
+            $subject = file_get_contents(base_path("stubs/vendor/crudgen/action_spa.stub"));
         } else {
-            $subject = file_get_contents(base_path("stubs/cruds/action.stub"));
+            $subject = file_get_contents(base_path("stubs/vendor/crudgen/action.stub"));
         }
         $index_replace_template = str_replace($search, $replace, $subject);
         $fileName = "/views/$classNameSlug";
@@ -241,7 +241,7 @@ class CrudController extends Controller
         $replace = [
             $primaryKey['name'], $classNameLower
         ];
-        $subject = file_get_contents(base_path("stubs/cruds/checked.stub"));
+        $subject = file_get_contents(base_path("stubs/vendor/crudgen/checked.stub"));
         $index_replace_template = str_replace($search, $replace, $subject);
         $fileName = "/views/$classNameSlug";
         file_put_contents(resource_path("$fileName/checked_{$classNameSlug}.blade.php"), $index_replace_template);
@@ -256,7 +256,7 @@ class CrudController extends Controller
         $fields = collect($request->fields);
         $fields_form = $fields->where("htmlType", "<>", false);
         $primaryKey = $fields->where("primary", true)->first();
-        $generatedForm = View::make("cruds/forms_generator", compact("fields_form", "primaryKey"))->render();
+        $generatedForm = View::make("vendor.crudgen.forms_generator", compact("fields_form", "primaryKey"))->render();
         $search = [
             '{@primaryKey}', '{@classNameLower}', '{@generatedForm}', 'xx-', '{@enctype}'
         ];
@@ -268,7 +268,7 @@ class CrudController extends Controller
         $replace = [
             $primaryKey['name'], $classNameLower, $generatedForm, 'x-', $enc
         ];
-        $subject = file_get_contents(base_path("stubs/cruds/form.stub"));
+        $subject = file_get_contents(base_path("stubs/vendor/crudgen/form.stub"));
         $index_replace_template = str_replace($search, $replace, $subject);
         $fileName = "/views/$classNameSlug";
         file_put_contents(resource_path("$fileName/form.blade.php"), $index_replace_template);
@@ -283,10 +283,10 @@ class CrudController extends Controller
         $primaryKey = $fields->where("primary", true)->first();
         $fields = $fields->where("primary", false);
         $pkName = $primaryKey['name'];
-        $generatedColumns = View::make("cruds.dt_columns", compact('fields'))->render();
+        $generatedColumns = View::make("vendor.crudgen.dt_columns", compact('fields'))->render();
         $fields = collect($request->fields);
         $fields_form = $fields->where("htmlType", "<>", false);
-        $generatedForm = View::make("cruds/forms_generator_spa", compact("fields_form", "primaryKey"))->render();
+        $generatedForm = View::make("vendor.crudgen.forms_generator_spa", compact("fields_form", "primaryKey"))->render();
         $jsonArr = [];
         foreach ($fields as $field) {
             $jsonArr[] = $field['name'] . ':"",';
@@ -300,12 +300,12 @@ class CrudController extends Controller
         ];
 
         if (config('app.mode') == 'spa') {
-            $subject = file_get_contents(base_path("stubs/cruds/vue.stub"));
+            $subject = file_get_contents(base_path("stubs/vendor/crudgen/vue.stub"));
             $path = "js/screens";
             $index_replace_template = str_replace($search, $replace, $subject);
             file_put_contents(resource_path("$path/$className.vue"), $index_replace_template);
         } else {
-            $subject = file_get_contents(base_path("stubs/cruds/index.stub"));
+            $subject = file_get_contents(base_path("stubs/vendor/crudgen/index.stub"));
             $path = "/views/$classNameSlug";
             if (!is_dir(resource_path($path))) {
                 mkdir(resource_path($path));
@@ -328,7 +328,7 @@ class CrudController extends Controller
         $replace = [
             $className, $classNameSlug, $classNameLower
         ];
-        $subject = file_get_contents(base_path("stubs/cruds/create.stub"));
+        $subject = file_get_contents(base_path("stubs/vendor/crudgen/create.stub"));
         $index_replace_template = str_replace($search, $replace, $subject);
         $path = "/views/$classNameSlug";
         file_put_contents(resource_path("$path/create.blade.php"), $index_replace_template);
@@ -346,7 +346,7 @@ class CrudController extends Controller
         $replace = [
             $className, $classNameSlug, $classNameLower, $primaryKey
         ];
-        $subject = file_get_contents(base_path("stubs/cruds/edit.stub"));
+        $subject = file_get_contents(base_path("stubs/vendor/crudgen/edit.stub"));
         $index_replace_template = str_replace($search, $replace, $subject);
         $path = "/views/$classNameSlug";
         file_put_contents(resource_path("$path/edit.blade.php"), $index_replace_template);
