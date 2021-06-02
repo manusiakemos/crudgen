@@ -69,7 +69,7 @@ class {@className}Controller extends Controller
      */
     public function create()
     {
-        return view('{@classNameLower}.form', ['data' => ${@classNameLower}, 'action' => route('{@classNameLower}.store')]);
+        return view('{@classNameLower}.form', [ 'action' => route('{@classNameLower}.store')]);
     }
 
     /**
