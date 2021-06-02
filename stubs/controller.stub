@@ -69,7 +69,7 @@ class {@className}Controller extends Controller
      */
     public function create()
     {
-        return view('{@classNameLower}.form', ['data' => ${@classNameLower}, 'action' => route('{@classNameSlug}.store')]);
+        return view('{@classNameLower}.form', ['data' => ${@classNameLower}, 'action' => route('{@classNameLower}.store')]);
     }
 
     /**
@@ -109,7 +109,7 @@ class {@className}Controller extends Controller
      */
     public function edit({@className} ${@classNameLower})
     {
-        return view('{@classNameLower}.form', ['data' => ${@classNameLower}, 'method'=> 'PUT', 'action' => route('{@classNameSlug}.update', $data->{@primaryKey})]);
+        return view('{@classNameLower}.form', ['data' => ${@classNameLower}, 'method'=> 'PUT', 'action' => route('{@classNameLower}.update', $data->{@primaryKey})]);
     }
 
     /**
