@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
@@ -155,12 +156,16 @@ class CrudController extends Controller
     private function generateRouter(Request $request)
     {
         $className = $request->input('class');
-        $routeBulk = "\n " . "Route::post('" . strtolower($className) . "/bulkdelete', '" . $className . "Controller@bulkDelete')->name('" . strtolower($className) . ".bulkdelete');";
-        $routeApi = "\n " . "Route::post('" . strtolower($className) . "/api', '" . $className . "Controller@api')->name('" . strtolower($className) . ".api');";
-        $route = "\n " . "Route::resource('" . strtolower($className) . "', '" . $className . "Controller');";
-        File::append(base_path("routes/web.php"), $routeBulk);
-        File::append(base_path("routes/web.php"), $routeApi);
-        File::append(base_path("routes/web.php"), $route);
+        //        Route::post('agama/api', [App\Http\Controllers\AgamaController::class, 'api'])
+        //            ->name('agama.api');
+        $routeBulk = "\n " . "Route::post('" . strtolower($className) . "/bulkdelete', [App\Http\Controllers\\" . $className . "Controller::class, 'bulkDelete'])
+            ->name('" . strtolower($className) . ".bulkdelete');";
+        $routeApi = "\n " . "Route::post('" . strtolower($className) . "/api', [App\Http\Controllers\\" . $className . "Controller::class, 'api'])
+            ->name('" . strtolower($className) . ".api');";
+        $route = "\n " . "Route::resource('" . strtolower($className) . "',\App\Http\Controllers\\" . $className . "Controller::class);";
+        File::append(base_path("routes/admin.php"), $routeBulk);
+        File::append(base_path("routes/admin.php"), $routeApi);
+        File::append(base_path("routes/admin.php"), $route);
 
         /*
         $route = strtolower($className);
