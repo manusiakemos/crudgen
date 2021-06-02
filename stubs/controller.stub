@@ -109,7 +109,7 @@ class {@className}Controller extends Controller
      */
     public function edit({@className} ${@classNameLower})
     {
-        return view('{@classNameLower}.form', ['data' => ${@classNameLower}, 'method'=> 'PUT', 'action' => route('{@classNameLower}.update', $data->{@primaryKey})]);
+        return view('{@classNameLower}.form', ['data' => ${@classNameLower}, 'method'=> 'PUT', 'action' => route('{@classNameLower}.update', ${@classNameLower}->{@primaryKey})]);
     }
 
     /**
